@@ -621,7 +621,7 @@
         }else if(info.type === 'rest'){
           const status = document.createElement('div');
           status.className = 'status';
-          status.textContent = '店休';
+          status.textContent = '公休';
           day.appendChild(status);
         }else{
           const slots = document.createElement('div');
@@ -648,7 +648,7 @@
         const info = data[day];
         text += `${month}/${day}\n`;
         if(info.type === 'full') text += `已滿\n\n`;
-        else if(info.type === 'rest') text += `店休\n\n`;
+        else if(info.type === 'rest') text += `公休\n\n`;
         else text += info.slots.join('、') + `\n\n`;
       });
       text += `實際預約時間請以私訊確認為準。`;
