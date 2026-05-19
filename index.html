@@ -19,7 +19,6 @@
       --soft:#F1E4D4;
       --full:#D8C5B0;
       --rest:#EEE2D5;
-      --white:#FFFFFF;
       --shadow:0 18px 40px rgba(86,63,42,.12);
       --radius:22px;
     }
@@ -30,38 +29,37 @@
       margin:0;
       font-family:'Noto Sans TC', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       color:var(--ink);
-      background:
-        radial-gradient(circle at top left, rgba(255,255,255,.9), transparent 32%),
-        var(--bg);
+      background:var(--bg);
       min-height:100vh;
-      padding:20px;
+      padding:14px;
     }
 
     .app{
-      max-width:1080px;
+      width:100%;
+      max-width:980px;
       margin:0 auto;
       display:grid;
-      grid-template-columns: 390px 1fr;
-      gap:20px;
+      grid-template-columns:360px 1fr;
+      gap:16px;
       align-items:start;
     }
 
     .panel, .preview-wrap{
-      background:rgba(255,253,248,.9);
+      background:rgba(255,253,248,.95);
       border:1px solid var(--line);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-      padding:20px;
+      padding:18px;
     }
 
     h1{
       margin:0 0 8px;
-      font-size:26px;
+      font-size:24px;
       letter-spacing:.04em;
     }
 
     .hint{
-      margin:0 0 18px;
+      margin:0 0 16px;
       color:var(--muted);
       line-height:1.7;
       font-size:14px;
@@ -70,8 +68,8 @@
     label{
       display:block;
       font-size:13px;
-      font-weight:700;
-      margin:16px 0 8px;
+      font-weight:800;
+      margin:14px 0 8px;
       color:var(--accent-dark);
     }
 
@@ -79,15 +77,16 @@
       width:100%;
       border:1px solid var(--line);
       border-radius:16px;
-      padding:12px 14px;
+      padding:13px 14px;
       background:#fffaf4;
       color:var(--ink);
-      font:inherit;
+      font-size:16px;
+      font-family:inherit;
       outline:none;
     }
 
     textarea{
-      min-height:260px;
+      min-height:230px;
       resize:vertical;
       line-height:1.7;
     }
@@ -113,8 +112,9 @@
     button{
       border:0;
       border-radius:16px;
-      padding:12px 14px;
-      font:inherit;
+      padding:14px;
+      font-size:16px;
+      font-family:inherit;
       font-weight:800;
       cursor:pointer;
       color:#fff;
@@ -141,40 +141,31 @@
 
     .preview-scroll{
       width:100%;
-      overflow:auto;
+      overflow:visible;
       border-radius:22px;
     }
 
     #calendarCard{
-      width:900px;
-      min-height:1200px;
+      width:100%;
+      max-width:620px;
+      margin:0 auto;
       background:#FFFDF8;
-      border-radius:34px;
-      padding:42px;
+      border-radius:28px;
+      padding:26px;
       position:relative;
       overflow:hidden;
+      border:1px solid rgba(223,207,189,.7);
     }
 
     #calendarCard::before{
       content:"";
       position:absolute;
-      width:260px;
-      height:260px;
+      width:180px;
+      height:180px;
       border-radius:50%;
       background:rgba(241,228,212,.75);
-      top:-90px;
-      right:-90px;
-    }
-
-    #calendarCard::after{
-      content:"";
-      position:absolute;
-      width:220px;
-      height:220px;
-      border-radius:50%;
-      background:rgba(246,239,229,.95);
-      bottom:-80px;
-      left:-70px;
+      top:-70px;
+      right:-70px;
     }
 
     .card-inner{
@@ -185,22 +176,22 @@
     .brand{
       display:flex;
       justify-content:space-between;
-      gap:18px;
+      gap:12px;
       align-items:flex-start;
-      margin-bottom:28px;
+      margin-bottom:18px;
     }
 
     .brand-title{
-      font-size:42px;
+      font-size:28px;
       font-weight:800;
-      letter-spacing:.05em;
-      line-height:1.2;
+      letter-spacing:.04em;
+      line-height:1.25;
     }
 
     .brand-sub{
       color:var(--muted);
-      font-size:18px;
-      margin-top:8px;
+      font-size:15px;
+      margin-top:6px;
       letter-spacing:.06em;
     }
 
@@ -209,7 +200,8 @@
       color:var(--accent-dark);
       border:1px solid var(--line);
       border-radius:999px;
-      padding:12px 18px;
+      padding:9px 12px;
+      font-size:13px;
       font-weight:800;
       white-space:nowrap;
     }
@@ -217,33 +209,34 @@
     .week{
       display:grid;
       grid-template-columns:repeat(7,1fr);
-      gap:8px;
-      margin-bottom:8px;
+      gap:5px;
+      margin-bottom:6px;
     }
 
     .weekday{
       text-align:center;
       color:var(--accent-dark);
       font-weight:800;
-      font-size:16px;
-      padding:10px 0;
+      font-size:13px;
+      padding:7px 0;
     }
 
     .calendar{
       display:grid;
       grid-template-columns:repeat(7,1fr);
-      gap:8px;
+      gap:5px;
     }
 
     .day{
-      min-height:126px;
+      min-height:82px;
       background:#fffaf4;
       border:1px solid var(--line);
-      border-radius:18px;
-      padding:12px 10px;
+      border-radius:12px;
+      padding:7px 4px;
       display:flex;
       flex-direction:column;
-      gap:8px;
+      gap:5px;
+      overflow:hidden;
     }
 
     .day.empty{
@@ -253,33 +246,36 @@
 
     .date-num{
       font-weight:800;
-      font-size:20px;
+      font-size:15px;
       line-height:1;
+      padding-left:2px;
     }
 
     .slots{
       display:flex;
       flex-direction:column;
-      gap:5px;
-      font-size:15px;
-      font-weight:700;
-      line-height:1.2;
+      gap:3px;
+      font-size:11px;
+      font-weight:800;
+      line-height:1.1;
     }
 
     .slot{
       background:#fff;
       border:1px solid rgba(185,129,85,.25);
       border-radius:999px;
-      padding:5px 8px;
+      padding:3px 2px;
       text-align:center;
       color:var(--accent-dark);
+      white-space:nowrap;
     }
 
     .status{
       margin-top:auto;
-      border-radius:14px;
-      padding:8px 6px;
+      border-radius:10px;
+      padding:6px 2px;
       text-align:center;
+      font-size:12px;
       font-weight:800;
       color:var(--accent-dark);
       background:var(--soft);
@@ -296,15 +292,15 @@
     }
 
     .footer{
-      margin-top:26px;
-      padding:18px 22px;
+      margin-top:16px;
+      padding:13px 15px;
       background:var(--soft);
       border:1px solid var(--line);
-      border-radius:22px;
+      border-radius:18px;
       color:var(--accent-dark);
       font-weight:700;
-      line-height:1.8;
-      font-size:17px;
+      line-height:1.7;
+      font-size:13px;
     }
 
     .toast{
@@ -325,18 +321,114 @@
 
     .toast.show{ opacity:1; }
 
-    @media (max-width:900px){
-      body{ padding:12px; }
-      .app{ grid-template-columns:1fr; }
-      .panel, .preview-wrap{ padding:16px; }
-      #calendarCard{
-        width:760px;
-        min-height:1020px;
-        padding:34px;
+    @media (max-width:820px){
+      body{ padding:10px; }
+
+      .app{
+        display:block;
       }
-      .brand-title{ font-size:34px; }
-      .day{ min-height:106px; }
-      .slot{ font-size:13px; padding:4px 6px; }
+
+      .panel, .preview-wrap{
+        padding:14px;
+        border-radius:20px;
+      }
+
+      .preview-wrap{
+        margin-top:14px;
+      }
+
+      h1{
+        font-size:22px;
+      }
+
+      textarea{
+        min-height:210px;
+      }
+
+      .btns{
+        position:sticky;
+        bottom:8px;
+        background:rgba(246,239,229,.92);
+        backdrop-filter:blur(8px);
+        padding:8px;
+        border-radius:18px;
+        margin-left:-8px;
+        margin-right:-8px;
+        z-index:20;
+      }
+
+      #calendarCard{
+        max-width:none;
+        width:100%;
+        padding:18px;
+        border-radius:22px;
+      }
+
+      .brand{
+        display:block;
+      }
+
+      .brand-title{
+        font-size:24px;
+      }
+
+      .badge{
+        display:inline-block;
+        margin-top:10px;
+        font-size:12px;
+      }
+
+      .week, .calendar{
+        gap:4px;
+      }
+
+      .weekday{
+        font-size:12px;
+      }
+
+      .day{
+        min-height:74px;
+        border-radius:10px;
+        padding:6px 3px;
+      }
+
+      .date-num{
+        font-size:14px;
+      }
+
+      .slot{
+        font-size:10px;
+        padding:3px 1px;
+      }
+
+      .status{
+        font-size:11px;
+        padding:5px 1px;
+      }
+
+      .footer{
+        font-size:12px;
+      }
+    }
+
+    @media (max-width:390px){
+      body{ padding:8px; }
+
+      #calendarCard{
+        padding:14px;
+      }
+
+      .day{
+        min-height:68px;
+      }
+
+      .slot{
+        font-size:9.5px;
+      }
+
+      .weekday{
+        font-size:11px;
+      }
     }
   </style>
 </head>
@@ -344,7 +436,7 @@
   <div class="app">
     <section class="panel">
       <h1>熊嶼空位生成器</h1>
-      <p class="hint">從 TimeTree 看完空位後，直接把日期跟時段貼進來，就能生成月曆圖。</p>
+      <p class="hint">從 TimeTree 看完空位後，把日期和時段貼進來，就能生成月曆圖。</p>
 
       <div class="row">
         <div>
@@ -395,20 +487,20 @@
             </div>
 
             <div class="week">
-              <div class="weekday">日</div>
               <div class="weekday">一</div>
               <div class="weekday">二</div>
               <div class="weekday">三</div>
               <div class="weekday">四</div>
               <div class="weekday">五</div>
               <div class="weekday">六</div>
+              <div class="weekday">日</div>
             </div>
 
             <div class="calendar" id="calendar"></div>
 
             <div class="footer">
               空位會依現場狀況更新，實際預約時間請以私訊確認為準。<br>
-            
+              熊嶼寵物｜一對一預約制美容
             </div>
           </div>
         </div>
@@ -487,7 +579,9 @@
       const calendar = document.getElementById('calendar');
       calendar.innerHTML = '';
 
-      const firstDay = new Date(year, month - 1, 1).getDay();
+      let firstDay = new Date(year, month - 1, 1).getDay();
+      firstDay = firstDay === 0 ? 6 : firstDay - 1;
+
       const daysInMonth = new Date(year, month, 0).getDate();
 
       for(let i=0; i<firstDay; i++){
@@ -542,7 +636,6 @@
     }
 
     function copyText(){
-      const year = Number(document.getElementById('year').value);
       const month = Number(document.getElementById('month').value);
       const data = parseInput();
 
@@ -558,6 +651,8 @@
 
       navigator.clipboard.writeText(text).then(()=>{
         showToast('已複製文字');
+      }).catch(()=>{
+        showToast('複製失敗，請手動選取');
       });
     }
 
@@ -565,8 +660,8 @@
       renderCalendar();
       const card = document.getElementById('calendarCard');
       const canvas = await html2canvas(card, {
-        scale: 2,
-        backgroundColor: null,
+        scale: 3,
+        backgroundColor: '#FFFDF8',
         useCORS: true
       });
       const link = document.createElement('a');
