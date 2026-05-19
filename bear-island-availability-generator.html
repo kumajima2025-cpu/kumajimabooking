@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>熊嶼空位生成器</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap');
+
+    :root{
+      --bg:#F6EFE5;
+      --card:#FFFDF8;
+      --ink:#3E332A;
+      --muted:#8A796B;
+      --line:#DFCFBD;
+      --accent:#B98155;
+      --accent-dark:#8B5E3C;
+      --soft:#F1E4D4;
+      --full:#D8C5B0;
+      --rest:#EEE2D5;
+      --white:#FFFFFF;
+      --shadow:0 18px 40px rgba(86,63,42,.12);
+      --radius:22px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family:'Noto Sans TC', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,.9), transparent 32%),
+        var(--bg);
+      min-height:100vh;
+      padding:20px;
+    }
+
+    .app{
+      max-width:1080px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns: 390px 1fr;
+      gap:20px;
+      align-items:start;
+    }
+
+    .panel, .preview-wrap{
+      background:rgba(255,253,248,.9);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+
+    h1{
+      margin:0 0 8px;
+      font-size:26px;
+      letter-spacing:.04em;
+    }
+
+    .hint{
+      margin:0 0 18px;
+      color:var(--muted);
+      line-height:1.7;
+      font-size:14px;
+    }
+
+    label{
+      display:block;
+      font-size:13px;
+      font-weight:700;
+      margin:16px 0 8px;
+      color:var(--accent-dark);
+    }
+
+    input, textarea{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px 14px;
+      background:#fffaf4;
+      color:var(--ink);
+      font:inherit;
+      outline:none;
+    }
+
+    textarea{
+      min-height:260px;
+      resize:vertical;
+      line-height:1.7;
+    }
+
+    input:focus, textarea:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(185,129,85,.16);
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .btns{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:16px;
+    }
+
+    button{
+      border:0;
+      border-radius:16px;
+      padding:12px 14px;
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+      color:#fff;
+      background:var(--accent);
+      box-shadow:0 8px 18px rgba(139,94,60,.18);
+    }
+
+    button.secondary{
+      color:var(--accent-dark);
+      background:var(--soft);
+      box-shadow:none;
+    }
+
+    button.full{
+      grid-column:1 / -1;
+    }
+
+    .small{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.7;
+      margin-top:12px;
+    }
+
+    .preview-scroll{
+      width:100%;
+      overflow:auto;
+      border-radius:22px;
+    }
+
+    #calendarCard{
+      width:900px;
+      min-height:1200px;
+      background:#FFFDF8;
+      border-radius:34px;
+      padding:42px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    #calendarCard::before{
+      content:"";
+      position:absolute;
+      width:260px;
+      height:260px;
+      border-radius:50%;
+      background:rgba(241,228,212,.75);
+      top:-90px;
+      right:-90px;
+    }
+
+    #calendarCard::after{
+      content:"";
+      position:absolute;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      background:rgba(246,239,229,.95);
+      bottom:-80px;
+      left:-70px;
+    }
+
+    .card-inner{
+      position:relative;
+      z-index:1;
+    }
+
+    .brand{
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
+      align-items:flex-start;
+      margin-bottom:28px;
+    }
+
+    .brand-title{
+      font-size:42px;
+      font-weight:800;
+      letter-spacing:.05em;
+      line-height:1.2;
+    }
+
+    .brand-sub{
+      color:var(--muted);
+      font-size:18px;
+      margin-top:8px;
+      letter-spacing:.06em;
+    }
+
+    .badge{
+      background:var(--soft);
+      color:var(--accent-dark);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:12px 18px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .week{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px;
+      margin-bottom:8px;
+    }
+
+    .weekday{
+      text-align:center;
+      color:var(--accent-dark);
+      font-weight:800;
+      font-size:16px;
+      padding:10px 0;
+    }
+
+    .calendar{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px;
+    }
+
+    .day{
+      min-height:126px;
+      background:#fffaf4;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:12px 10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .day.empty{
+      background:transparent;
+      border:1px dashed rgba(223,207,189,.45);
+    }
+
+    .date-num{
+      font-weight:800;
+      font-size:20px;
+      line-height:1;
+    }
+
+    .slots{
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      font-size:15px;
+      font-weight:700;
+      line-height:1.2;
+    }
+
+    .slot{
+      background:#fff;
+      border:1px solid rgba(185,129,85,.25);
+      border-radius:999px;
+      padding:5px 8px;
+      text-align:center;
+      color:var(--accent-dark);
+    }
+
+    .status{
+      margin-top:auto;
+      border-radius:14px;
+      padding:8px 6px;
+      text-align:center;
+      font-weight:800;
+      color:var(--accent-dark);
+      background:var(--soft);
+    }
+
+    .day.full .status{
+      background:var(--full);
+      color:#6E5847;
+    }
+
+    .day.rest .status{
+      background:var(--rest);
+      color:#867363;
+    }
+
+    .footer{
+      margin-top:26px;
+      padding:18px 22px;
+      background:var(--soft);
+      border:1px solid var(--line);
+      border-radius:22px;
+      color:var(--accent-dark);
+      font-weight:700;
+      line-height:1.8;
+      font-size:17px;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:22px;
+      transform:translateX(-50%);
+      background:#3E332A;
+      color:white;
+      padding:12px 18px;
+      border-radius:999px;
+      opacity:0;
+      pointer-events:none;
+      transition:.25s;
+      z-index:99;
+      font-weight:700;
+    }
+
+    .toast.show{ opacity:1; }
+
+    @media (max-width:900px){
+      body{ padding:12px; }
+      .app{ grid-template-columns:1fr; }
+      .panel, .preview-wrap{ padding:16px; }
+      #calendarCard{
+        width:760px;
+        min-height:1020px;
+        padding:34px;
+      }
+      .brand-title{ font-size:34px; }
+      .day{ min-height:106px; }
+      .slot{ font-size:13px; padding:4px 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="panel">
+      <h1>熊嶼空位生成器</h1>
+      <p class="hint">從 TimeTree 看完空位後，直接把日期跟時段貼進來，就能生成月曆圖。</p>
+
+      <div class="row">
+        <div>
+          <label for="year">年份</label>
+          <input id="year" type="number" min="2024" max="2099" />
+        </div>
+        <div>
+          <label for="month">月份</label>
+          <input id="month" type="number" min="1" max="12" />
+        </div>
+      </div>
+
+      <label for="title">標題</label>
+      <input id="title" value="熊嶼可預約時段" />
+
+      <label for="input">空位內容</label>
+      <textarea id="input">6/1 滿
+6/2 10:00 15:00 16:00
+6/3 休
+6/4 13:00 17:00
+6/5 滿</textarea>
+
+      <div class="btns">
+        <button onclick="renderCalendar()">生成月曆</button>
+        <button class="secondary" onclick="copyText()">複製文字</button>
+        <button class="secondary full" onclick="downloadImage()">下載 PNG 圖片</button>
+      </div>
+
+      <p class="small">
+        可輸入格式：<br>
+        6/2 10 15 16<br>
+        6/3 滿<br>
+        6/4 休<br>
+        系統會自動把 10 變成 10:00。
+      </p>
+    </section>
+
+    <section class="preview-wrap">
+      <div class="preview-scroll">
+        <div id="calendarCard">
+          <div class="card-inner">
+            <div class="brand">
+              <div>
+                <div class="brand-title" id="cardTitle">熊嶼可預約時段</div>
+                <div class="brand-sub" id="cardSub">2026 / 6</div>
+              </div>
+              <div class="badge">預約請私訊 LINE</div>
+            </div>
+
+            <div class="week">
+              <div class="weekday">日</div>
+              <div class="weekday">一</div>
+              <div class="weekday">二</div>
+              <div class="weekday">三</div>
+              <div class="weekday">四</div>
+              <div class="weekday">五</div>
+              <div class="weekday">六</div>
+            </div>
+
+            <div class="calendar" id="calendar"></div>
+
+            <div class="footer">
+              空位會依現場狀況更新，實際預約時間請以私訊確認為準。<br>
+              熊嶼寵物｜一對一預約制美容
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast">完成</div>
+
+  <script>
+    const now = new Date();
+    document.getElementById('year').value = now.getFullYear();
+    document.getElementById('month').value = now.getMonth() + 1;
+
+    function showToast(text){
+      const toast = document.getElementById('toast');
+      toast.textContent = text;
+      toast.classList.add('show');
+      setTimeout(()=>toast.classList.remove('show'), 1600);
+    }
+
+    function normalizeTime(token){
+      token = token.trim();
+      if(!token) return '';
+      if(token.includes(':')) return token;
+      if(/^\d{1,2}$/.test(token)) return token.padStart(2,'0') + ':00';
+      if(/^\d{3,4}$/.test(token)){
+        const h = token.slice(0, -2).padStart(2,'0');
+        const m = token.slice(-2);
+        return `${h}:${m}`;
+      }
+      return token;
+    }
+
+    function parseInput(){
+      const lines = document.getElementById('input').value
+        .split('\n')
+        .map(v => v.trim())
+        .filter(Boolean);
+
+      const data = {};
+
+      lines.forEach(line => {
+        const parts = line.replace(/[，、,]/g, ' ').split(/\s+/).filter(Boolean);
+        if(parts.length < 2) return;
+
+        const datePart = parts[0];
+        const match = datePart.match(/(?:(\d{1,2})\/)?(\d{1,2})/);
+        if(!match) return;
+
+        const day = Number(match[2]);
+        const rest = parts.slice(1);
+
+        const joined = rest.join('');
+        if(/滿|已滿|full/i.test(joined)){
+          data[day] = { type:'full', slots:[] };
+        }else if(/休|店休|公休|off/i.test(joined)){
+          data[day] = { type:'rest', slots:[] };
+        }else{
+          data[day] = { type:'open', slots:rest.map(normalizeTime) };
+        }
+      });
+
+      return data;
+    }
+
+    function renderCalendar(){
+      const year = Number(document.getElementById('year').value);
+      const month = Number(document.getElementById('month').value);
+      const title = document.getElementById('title').value.trim() || '熊嶼可預約時段';
+      const data = parseInput();
+
+      document.getElementById('cardTitle').textContent = title;
+      document.getElementById('cardSub').textContent = `${year} / ${month}`;
+
+      const calendar = document.getElementById('calendar');
+      calendar.innerHTML = '';
+
+      const firstDay = new Date(year, month - 1, 1).getDay();
+      const daysInMonth = new Date(year, month, 0).getDate();
+
+      for(let i=0; i<firstDay; i++){
+        const empty = document.createElement('div');
+        empty.className = 'day empty';
+        calendar.appendChild(empty);
+      }
+
+      for(let d=1; d<=daysInMonth; d++){
+        const info = data[d];
+        const day = document.createElement('div');
+        day.className = 'day';
+
+        if(info?.type === 'full') day.classList.add('full');
+        if(info?.type === 'rest') day.classList.add('rest');
+
+        const num = document.createElement('div');
+        num.className = 'date-num';
+        num.textContent = d;
+        day.appendChild(num);
+
+        if(!info){
+          const status = document.createElement('div');
+          status.className = 'status';
+          status.textContent = '';
+          status.style.background = 'transparent';
+          day.appendChild(status);
+        }else if(info.type === 'full'){
+          const status = document.createElement('div');
+          status.className = 'status';
+          status.textContent = '已滿';
+          day.appendChild(status);
+        }else if(info.type === 'rest'){
+          const status = document.createElement('div');
+          status.className = 'status';
+          status.textContent = '店休';
+          day.appendChild(status);
+        }else{
+          const slots = document.createElement('div');
+          slots.className = 'slots';
+          info.slots.forEach(s => {
+            const slot = document.createElement('div');
+            slot.className = 'slot';
+            slot.textContent = s;
+            slots.appendChild(slot);
+          });
+          day.appendChild(slots);
+        }
+
+        calendar.appendChild(day);
+      }
+    }
+
+    function copyText(){
+      const year = Number(document.getElementById('year').value);
+      const month = Number(document.getElementById('month').value);
+      const data = parseInput();
+
+      let text = `🐻 熊嶼 ${month}月可預約時段\n\n`;
+      Object.keys(data).map(Number).sort((a,b)=>a-b).forEach(day => {
+        const info = data[day];
+        text += `${month}/${day}\n`;
+        if(info.type === 'full') text += `已滿\n\n`;
+        else if(info.type === 'rest') text += `店休\n\n`;
+        else text += info.slots.join('、') + `\n\n`;
+      });
+      text += `實際預約時間請以私訊確認為準。`;
+
+      navigator.clipboard.writeText(text).then(()=>{
+        showToast('已複製文字');
+      });
+    }
+
+    async function downloadImage(){
+      renderCalendar();
+      const card = document.getElementById('calendarCard');
+      const canvas = await html2canvas(card, {
+        scale: 2,
+        backgroundColor: null,
+        useCORS: true
+      });
+      const link = document.createElement('a');
+      const month = document.getElementById('month').value;
+      link.download = `熊嶼${month}月空位表.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast('圖片已下載');
+    }
+
+    renderCalendar();
+  </script>
+</body>
+</html>
